@@ -419,6 +419,16 @@ async def ping(raw_request: Request) -> Response:
     return await health(raw_request)
 
 
+@router.api_route("/v2/health/live")
+async def live(raw_request: Request) -> Response:
+    """Ping check. Endpoint required for SageMaker"""
+    return await health(raw_request)
+
+@router.api_route("/v2/health/ready")
+async def ready(raw_request: Request) -> Response:
+    """Ping check. Endpoint required for SageMaker"""
+    return await health(raw_request)
+
 @router.post("/tokenize", dependencies=[Depends(validate_json_request)])
 @with_cancellation
 async def tokenize(request: TokenizeRequest, raw_request: Request):
@@ -1048,13 +1058,13 @@ async def run_server(args, **uvicorn_kwargs) -> None:
 
     valid_tool_parses = ToolParserManager.tool_parsers.keys()
     if args.enable_auto_tool_choice \
-        and args.tool_call_parser not in valid_tool_parses:
+            and args.tool_call_parser not in valid_tool_parses:
         raise KeyError(f"invalid tool call parser: {args.tool_call_parser} "
                        f"(chose from {{ {','.join(valid_tool_parses)} }})")
 
     valid_reasoning_parses = ReasoningParserManager.reasoning_parsers.keys()
     if args.enable_reasoning \
-        and args.reasoning_parser not in valid_reasoning_parses:
+            and args.reasoning_parser not in valid_reasoning_parses:
         raise KeyError(
             f"invalid reasoning parser: {args.reasoning_parser} "
             f"(chose from {{ {','.join(valid_reasoning_parses)} }})")
